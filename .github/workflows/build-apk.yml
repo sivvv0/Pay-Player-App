@@ -1,0 +1,59 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Build web app
+      run: |
+        # If you have a build script
+        npm run build
+        # Or just create www folder
+        mkdir -p www
+        echo "<h1>Pay-Player</h1>" > www/index.html
+    
+    - name: Add Android platform
+      run: npx cap add android
+    
+    - name: Sync Capacitor
+      run: npx cap sync
+    
+    - name: Build APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+        # For release build (if you have keystore):
+        # ./gradlew assembleRelease
+    
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-debug
+        path: android/app/build/outputs/apk/debug/*.apk

@@ -3,9 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   build:
@@ -30,16 +28,31 @@ jobs:
       uses: android-actions/setup-android@v3
     
     - name: Install dependencies
-      run: npm install
+      run: |
+        npm install
+        npm install -D typescript
     
     - name: Build web app
       run: |
-        # Create www folder with your app
         mkdir -p www
-        echo '<h1>Pay-Player</h1><p>Your app loads from: https://yourwebsite.com</p>' > www/index.html
+        echo '<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Pay-Player</title>
+        </head>
+        <body>
+            <h1>Pay-Player</h1>
+            <p>Loading...</p>
+        </body>
+        </html>' > www/index.html
+    
+    - name: Remove existing Android platform (if any)
+      run: rm -rf android || true  # ← ADD THIS LINE
     
     - name: Add Android platform
-      run: npx cap add android
+      run: npx cap add android  # ← This will now work
     
     - name: Sync Capacitor
       run: npx cap sync

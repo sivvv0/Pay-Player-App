@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Pay-Player',
   webDir: 'www',
   server: {
-    url: 'https://yourwebsite.com',
+    url: 'https://plusdash.vercel.app',
     cleartext: false
   }
 };

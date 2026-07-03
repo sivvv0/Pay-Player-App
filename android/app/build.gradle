@@ -10,6 +10,14 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    
+    // 🔥 Just rename to "Pay-Player.apk" for all builds
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "Pay-Playe"
+        }
+    }
+    
     buildTypes {
         release {
             minifyEnabled false
